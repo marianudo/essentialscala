@@ -48,3 +48,11 @@ case class Counter(val count: Int = 0) {
 class Adder(amount: Int) {
   def apply(in: Int) = in + amount
 }
+
+object Dad {
+  def rate(f: Film): Double = f match {
+    case Film(_, _, _, Director("Clint", "Eastwood", _)) => 10.0
+    case Film(_, _, _, Director("John", "McTiernan", _)) => 7.0
+    case _ => 3.0
+  }
+}
