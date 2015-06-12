@@ -6,7 +6,19 @@ class Director(
   val yearOfBirth: Int) {
 
     def name = s"$firstName $lastName"
+
+    override def toString = s"Director($firstName,$lastName,$yearOfBirth)"
   }
+
+object Director {
+  def apply(firstName: String,
+    lastName: String,
+    yearOfBirth: Int) = new Director(firstName, lastName, yearOfBirth)
+
+  def older(d1: Director, d2: Director) =
+    if(d1.yearOfBirth >= d2.yearOfBirth) d2
+    else d1
+}
 
 class Film(
   name: String,
@@ -33,9 +45,9 @@ class Counter(val count: Int) {
   def dec(inc: Int = 1) = new Counter(count - inc)
   def inc: Counter = inc()
   def dec: Counter = dec()
-  def adjust(adder: Adder) = new Counter(adder add count)
+  def adjust(adder: Adder) = new Counter(adder(count))
 }
 
 class Adder(amount: Int) {
-  def add(in: Int) = in + amount
+  def apply(in: Int) = in + amount
 }
