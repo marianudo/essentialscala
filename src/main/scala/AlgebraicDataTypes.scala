@@ -12,10 +12,10 @@ final case object Yellow extends TrafficLight
 /**
  * Exercise 6.4.4.2
  */
-sealed trait CalculationOutcome
+sealed trait Calculation
 
-final case class Succeess(result: Int) extends CalculationOutcome
-final case class Failure(reason: String) extends CalculationOutcome
+final case class Success(result: Int) extends Calculation
+final case class Failure(reason: String) extends Calculation
 
 /**
  * Exercise 6.4.4.3
@@ -58,3 +58,31 @@ sealed trait TrafficLightWithPatternMatching {
 final case object RedWithPatternMatching extends TrafficLightWithPatternMatching
 final case object GreenWithPatternMatching extends TrafficLightWithPatternMatching
 final case object YellowWithPatternMatching extends TrafficLightWithPatternMatching
+
+/**
+ * Exercise 6.5.6.2
+ */
+final case object Calculator {
+  def +(calc: Calculation, v: Int): Calculation = calc match {
+    case Success(r) => Success(r + v)
+    case Failure(msg) => Failure(msg)
+  }
+
+  def -(calc: Calculation, v: Int): Calculation = calc match {
+    case Success(r) => Success(r - v)
+    case Failure(msg) => Failure(msg)
+  }
+
+  def /(calc: Calculation, v: Int) : Calculation = calc match {
+    case Success(r) if(v!=0) => Success(r / v)
+    case Failure(msg) => Failure(msg)
+    case _ if(v==0) => Failure("Division by zero")
+  }
+
+  // Abstraction not introduced in the book yet, but that shall come
+  def map(cal: Calculation, v: Int)(f: (Int, Int) => Int): Calculation = cal match {
+    case Success(r) => Success(f(r, v))
+    case Failure(msg) => Failure(msg)
+  }
+
+}
