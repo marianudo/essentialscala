@@ -27,3 +27,34 @@ sealed trait WaterSource
 final case object Well extends WaterSource
 final case object Spring extends WaterSource
 final case object Tap extends WaterSource
+
+/**
+ * Exercise 6.5.6.1
+ */
+sealed trait TrafficLightWithPolimorphism {
+  def next: TrafficLightWithPolimorphism
+}
+
+final case object RedWithPolimorphism extends TrafficLightWithPolimorphism {
+  def next = GreenWithPolimorphism
+}
+
+final case object GreenWithPolimorphism extends TrafficLightWithPolimorphism {
+  def next = YellowWithPolimorphism
+}
+
+final case object YellowWithPolimorphism extends TrafficLightWithPolimorphism {
+  def next = RedWithPolimorphism
+}
+
+sealed trait TrafficLightWithPatternMatching {
+  def next = this match {
+    case RedWithPatternMatching => GreenWithPatternMatching
+    case GreenWithPatternMatching => YellowWithPatternMatching
+    case YellowWithPatternMatching => RedWithPatternMatching
+  }
+}
+
+final case object RedWithPatternMatching extends TrafficLightWithPatternMatching
+final case object GreenWithPatternMatching extends TrafficLightWithPatternMatching
+final case object YellowWithPatternMatching extends TrafficLightWithPatternMatching
