@@ -28,6 +28,18 @@ final case object End extends IntList
 /**
  * Exercise 7.1.3.1
  */
-sealed trait LinkedList[A]
+sealed trait LinkedList[A] {
+  def length: Int = this match {
+    case LinkedEnd() => 0
+    case LinkedPair(_, tl) => 1 + tl.length
+  }
+
+  def contains(a: A): Boolean = this match {
+    case LinkedEnd() => false
+    case LinkedPair(hd, tl) => hd == a || (tl contains a)
+  }
+}
+
 final case class LinkedEnd[A]() extends LinkedList[A]
+
 final case class LinkedPair[A](head: A, tail: LinkedList[A]) extends LinkedList[A]
