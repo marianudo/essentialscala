@@ -24,3 +24,10 @@ sealed trait IntList {
 
 final case class Pair(hd: Int, tl: IntList) extends IntList
 final case object End extends IntList
+
+/**
+ * Exercise 7.1.3.1
+ */
+sealed trait LinkedList[A]
+final case class LinkedEnd[A]() extends LinkedList[A]
+final case class LinkedPair[A](head: A, tail: LinkedList[A]) extends LinkedList[A]
