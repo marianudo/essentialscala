@@ -15,6 +15,11 @@ sealed trait IntList {
     case Pair(hd, tl) => Pair(2 * hd, tl.double)
     case _ => End
   }
+
+  def sum: Int = this match {
+    case End => 0
+    case Pair(hd, tl) => hd + tl.sum
+  }
 }
 
 final case class Pair(hd: Int, tl: IntList) extends IntList
