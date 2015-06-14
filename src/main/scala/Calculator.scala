@@ -1,3 +1,5 @@
+package com.codinginflipflops.essentialscala
+
 sealed trait Expression {
   def eval: Calculation
 }
@@ -28,7 +30,9 @@ final case class Division(left: Expression, right: Expression) extends Expressio
     case Failure(msg) => Failure(msg)
     case Success(lr) => right.eval match {
       case Failure(msg) => Failure(msg)
-      case Success(rr) => Success(lr / rr)
+      case Success(rr) =>
+        if(rr == 0) Failure("Division by zero")
+        else Success(lr / rr)
     }
   }
 }
