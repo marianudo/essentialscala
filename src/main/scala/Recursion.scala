@@ -2,20 +2,18 @@ package com.codinginflipflops.essentialscala
 
 sealed trait IntList {
   def length: Int =
-    fold(0, (_, acc) => acc + 1)
+    fold[Int](0, (_, acc) => acc + 1)
 
   def product: Int =
-    fold(1, (hd, acc) => hd * acc)
+    fold[Int](1, (hd, acc) => hd * acc)
 
-  def double: IntList = this match {
-    case Pair(hd, tl) => Pair(2 * hd, tl.double)
-    case _ => End
-  }
+  def double: IntList =
+    fold[IntList](End, (hd, acc) => Pair(hd * 2, acc))
 
   def sum: Int =
-    fold(0, (hd, acc) => hd + acc)
+    fold(0, (hd: Int, acc: Int) => hd + acc)
 
-  def fold(end: Int, f: (Int, Int) => Int): Int = this match {
+  def fold[A](end: A, f: (Int, A) => A): A = this match {
     case End => end
     case Pair(hd, tl) => f(hd, tl.fold(end, f))
   }
@@ -46,6 +44,12 @@ sealed trait LinkedList[A] {
     }
     case LinkedEnd() => LinkedListFailure("No such element")
   }
+
+  def fold[B](z: B, f: (A, B) => B): B = this match {
+    case LinkedEnd() => z
+    case LinkedPair(hd, tl) => f(hd, tl.fold(z, f))
+  }
+
 }
 
 final case class LinkedEnd[A]() extends LinkedList[A]
