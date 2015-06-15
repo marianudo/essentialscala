@@ -50,6 +50,11 @@ sealed trait LinkedList[A] {
     case LinkedPair(hd, tl) => f(hd, tl.fold(z, f))
   }
 
+  def map[B](f: A => B): LinkedList[B] = this match {
+    case LinkedPair(hd, tl) => LinkedPair(f(hd), tl.map(f))
+    case LinkedEnd() => LinkedEnd()
+  }
+
 }
 
 final case class LinkedEnd[A]() extends LinkedList[A]
