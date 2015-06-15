@@ -38,6 +38,17 @@ sealed trait LinkedList[A] {
     case LinkedEnd() => false
     case LinkedPair(hd, tl) => hd == a || (tl contains a)
   }
+
+  def apply(n: Int): A = {
+    @annotation.tailrec
+    def go(n: Int, remaining: LinkedList[A]): A = remaining match {
+      case LinkedPair(hd, tl) if(n==0) => hd
+      case LinkedPair(hd, tl) => go(n -1, tl)
+      case LinkedEnd() => throw new NoSuchElementException()
+    }
+    go(n, this)
+  }
+
 }
 
 final case class LinkedEnd[A]() extends LinkedList[A]
