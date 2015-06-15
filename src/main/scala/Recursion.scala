@@ -1,24 +1,23 @@
 package com.codinginflipflops.essentialscala
 
 sealed trait IntList {
-  def length: Int = this match {
-    case End => 0
-    case Pair(_, tl) => 1 + tl.length
-  }
+  def length: Int =
+    fold(0, (_, acc) => acc + 1)
 
-  def product: Int = this match {
-    case End => 1
-    case Pair(hd, tl) => hd * tl.product
-  }
+  def product: Int =
+    fold(1, (hd, acc) => hd * acc)
 
   def double: IntList = this match {
     case Pair(hd, tl) => Pair(2 * hd, tl.double)
     case _ => End
   }
 
-  def sum: Int = this match {
-    case End => 0
-    case Pair(hd, tl) => hd + tl.sum
+  def sum: Int =
+    fold(0, (hd, acc) => hd + acc)
+
+  def fold(end: Int, f: (Int, Int) => Int): Int = this match {
+    case End => end
+    case Pair(hd, tl) => f(hd, tl.fold(end, f))
   }
 }
 
