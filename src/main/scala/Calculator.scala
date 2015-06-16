@@ -1,54 +1,31 @@
 package com.codinginflipflops.essentialscala
 
+import com.codinginflipflops.essentialscala.generics._
+
 sealed trait Expression {
-  def eval: Calculation
-}
-
-final case class Addition(left: Expression, right: Expression) extends Expression {
-  def eval = left.eval match {
-    case Failure(msg) => Failure(msg)
-    case Success(lr) => right.eval match {
-      case Failure(msg) => Failure(msg)
-      case Success(rr) => Success(lr + rr)
-    }
-  }
-}
-
-final case class Substraction(left: Expression, right: Expression) extends Expression {
-  def eval = left.eval match {
-    case Failure(msg) => Failure(msg)
-    case Success(lr) => right.eval match {
-      case Failure(msg) => Failure(msg)
-      case Success(rr) => Success (lr - rr)
-    }
+  def eval: Sum[String, Double] = this match {
+    case Addition(l, r) => lift(l, r)((a, b) => Success(a+b))
+    case Substraction(l, r) => lift(l, r)((a, b) => Success(a-b))
+    case Division(l, r) => lift(l, r)((a, b) =>
+        if(b != 0) Success(a / b) else Failure("Division by zero"))
+    case SquareRoot(n) => n.eval.flatMap(v =>
+        if(v < 0) Failure("Square root of negative number")
+        else Success(math.pow(v, 0.5)))
+    case Number(n) => Success(n)
   }
 
+  private def lift(e1: Expression, e2: Expression)(f: (Double, Double) => Sum[String, Double]) =
+    e1.eval.flatMap(
+      v1 => e2.eval.flatMap(
+        v2 => f(v1, v2)))
 }
 
-final case class Division(left: Expression, right: Expression) extends Expression {
-  def eval = left.eval match {
-    case Failure(msg) => Failure(msg)
-    case Success(lr) => right.eval match {
-      case Failure(msg) => Failure(msg)
-      case Success(rr) =>
-        if(rr == 0) Failure("Division by zero")
-        else Success(lr / rr)
-    }
-  }
-}
+final case class Addition(left: Expression, right: Expression) extends Expression
 
-final case class SquareRoot(value: Double) extends Expression {
-  def eval =
-    if(value < 0) Failure("Square root of negative number")
-    else Success(math.pow(value, 0.5))
-}
+final case class Substraction(left: Expression, right: Expression) extends Expression
 
-final case class Number(value: Double) extends Expression {
-  def eval = Success(value)
-}
+final case class Division(left: Expression, right: Expression) extends Expression
 
-sealed trait Calculation
+final case class SquareRoot(value: Expression) extends Expression
 
-final case class Success(result: Double) extends Calculation
-
-final case class Failure(message: String) extends Calculation
+final case class Number(value: Double) extends Expression
