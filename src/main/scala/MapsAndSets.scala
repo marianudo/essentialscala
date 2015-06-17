@@ -50,4 +50,7 @@ object MapsAndSets {
     val oldestGuyAgeEntry = ages.find { case (a, b) => b == maxAge}
     favoriteColor(oldestGuyAgeEntry.get._1)
   }
+
+  def union[A](s1: Set[A], s2: Set[A]): Set[A] =
+    s1.foldRight(s2)((a: A, b: Set[A]) => b + a)
 }
