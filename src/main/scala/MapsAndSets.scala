@@ -69,4 +69,22 @@ object MapsAndSets {
         map + (k -> newV)
     }
   }
+
+  /*
+   * First implementation from the top of my head. I'll try to remove the Option from the function
+   */
+  def union[A, B](m1: Map[A, B], m2: Map[A, B])(f: (B, Option[B]) => B): Map[A, B] = {
+    val foldFunc: (Map[A, B], (A, B)) => Map[A, B] =
+      (map, tup) => map + (tup._1 -> f(tup._2, map.get(tup._1)))
+
+    m1.foldLeft(m2)(foldFunc)
+  }
+
+  def unionOk[A, B](m1: Map[A, B], m2: Map[A, B])(f: (B, B) => B): Map[A, B] = {
+    m1.foldLeft(m2) { (map, tup) =>
+      val (k, v) = tup
+      val newV = map.get(k).map(v2 => f(v2, v)).getOrElse(v)
+      map + (k -> newV)
+    }
+  }
 }
