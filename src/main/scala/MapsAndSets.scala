@@ -52,5 +52,5 @@ object MapsAndSets {
   }
 
   def union[A](s1: Set[A], s2: Set[A]): Set[A] =
-    s1.foldRight(s2)((a: A, b: Set[A]) => b + a)
+    s1.foldRight(s2)((a, b) => b + a)
 }
