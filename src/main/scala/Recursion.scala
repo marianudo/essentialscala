@@ -55,6 +55,32 @@ sealed trait LinkedList[A] {
     case LinkedEnd() => LinkedEnd()
   }
 
+  def mapViaFlatMap[B](f: A => B): LinkedList[B] =
+    flatMap(a => LinkedPair(f(a), LinkedEnd()))
+
+  def flatMap[B](f: A => LinkedList[B]): LinkedList[B] = this match {
+    case LinkedEnd() => LinkedEnd()
+    case LinkedPair(h, t) => f(h).append(t.flatMap(f))
+  }
+
+  def flatMapViaFold[B](f: A => LinkedList[B]): LinkedList[B] =
+    fold(LinkedEnd[B](), (a: A, b: LinkedList[B]) => f(a).append(b))
+
+  def append(a: A): LinkedList[A] =
+    append(LinkedPair(a, LinkedEnd()))
+
+  def append(l: LinkedList[A]): LinkedList[A] = this match {
+    case LinkedEnd() => l
+    case LinkedPair(h, t) => LinkedPair(h, t.append(l))
+  }
+
+  def appendViaFold(l: LinkedList[A]): LinkedList[A] =
+    fold(l, (a: A, b: LinkedList[A]) => LinkedPair(a, b))
+
+  def prepend(a: A): LinkedList[A] = this match {
+    case LinkedEnd() => LinkedPair(a, LinkedEnd())
+    case LinkedPair(h, t) => LinkedPair(a, LinkedPair(h, t))
+  }
 }
 
 final case class LinkedEnd[A]() extends LinkedList[A]
