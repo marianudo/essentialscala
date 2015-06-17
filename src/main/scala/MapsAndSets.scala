@@ -53,4 +53,20 @@ object MapsAndSets {
 
   def union[A](s1: Set[A], s2: Set[A]): Set[A] =
     s1.foldRight(s2)((a, b) => b + a)
+
+  def sumUnion[A](m1: Map[A, Int], m2: Map[A, Int]): Map[A, Int] =
+    m1.foldLeft(m2)((a: Map[A, Int], b: (A, Int)) => a + (b._1 -> (a.getOrElse(b._1, 0) + b._2)))
+
+  /*
+   * This is the book implementation, but it doesn't work as it is.
+   * I had to fix it (look at line 68 and compare it with exercise A.5.41 to see the fix)
+   */
+  def sumUnionRef[A](m1: Map[A, Int], m2: Map[A, Int]): Map[A, Int] = {
+    m1.foldLeft(m2) {
+      (map, elt) =>
+        val (k, v) = elt
+        val newV = map.getOrElse(k, 0) + v
+        map + (k -> newV)
+    }
+  }
 }
