@@ -29,12 +29,17 @@ object Equal {
     def ===(other: A)(implicit eq: Equal[A]): Boolean =
       eq.equal(other, a)
   }
+
+  import IntImplicits._
+
+  implicit def addYeahToInt(i: Int): IntOps =
+    new IntOps(i)
 }
 
 case class Person(name: String, email: String)
 
 object IntImplicits {
-  implicit class IntOps(v: Int) {
+  class IntOps(v: Int) {
     def yeah = times {_ => println("Oh yeah!")}
 
     def times(f: Int => Unit): Unit = {
